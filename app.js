@@ -21,7 +21,6 @@ mongoose
   .connect('mongodb://localhost/passport-roles', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-    useCreateIndex: true
   })
   .then(x => console.log(`Connected to Mongo! Database name: "${x.connections[0].name}"`))
   .catch(err => console.error('Error connecting to mongo', err));
@@ -37,13 +36,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-app.use(
-  session({
-    secret: process.env.SECRET,
-    resave: true,
-    saveUninitialized: true,
-  })
-)
+app.use(session(require('./configs/session.config')))
 
 passport.serializeUser((user, next) => next(null, user._id))
 passport.deserializeUser((id, next) => {

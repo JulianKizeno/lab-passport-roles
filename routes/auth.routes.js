@@ -1,5 +1,18 @@
 const express = require('express')
 const router = express.Router()
+
+// Reject structured query operators before authentication or database lookups.
+router.use(['/login', '/signup'], (req, res, next) => {
+    if (req.method !== 'POST') return next()
+    const body = req.body || {}
+    if (typeof body.username !== 'string' || !body.username.trim() ||
+        body.username.length > 128 || typeof body.password !== 'string' ||
+        !body.password || Buffer.byteLength(body.password, 'utf8') > 72) {
+        return res.status(400).json({ message: 'Invalid credentials format' })
+    }
+    return next()
+})
+
 const User = require('../models/User.model')
 const bcrypt = require('bcrypt')
 const bcryptSalt = 10
@@ -11,7 +24,7 @@ router.get('/signup', (req, res) => {
   res.render('auth/signup')
 })
 
-router.post('/signup', (req, res) => {
+router.post('/signup', (req, res, next) => {
   const { username, password } = req.body
 
   if (!username || !password) {
