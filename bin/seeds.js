@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const User     = require('../models/User.model')
 const dbName = "passport-roles";
-mongoose.connect(`mongodb://localhost/${dbName}`, { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(process.env.MONGODB_URI || `mongodb://localhost/${dbName}`, { useNewUrlParser: true, useUnifiedTopology: true });
 const bcrypt = require('bcrypt')
 
 const bcryptSalt = 10

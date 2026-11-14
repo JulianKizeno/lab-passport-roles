@@ -18,10 +18,9 @@ const session = require('express-session')
 
 
 mongoose
-  .connect('mongodb://localhost/passport-roles', {
+  .connect(process.env.MONGODB_URI || 'mongodb://localhost/passport-roles', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-    useCreateIndex: true
   })
   .then(x => console.log(`Connected to Mongo! Database name: "${x.connections[0].name}"`))
   .catch(err => console.error('Error connecting to mongo', err));
@@ -37,11 +36,15 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
+if (!process.env.SECRET || process.env.SECRET.length < 32) {
+  throw new Error('SECRET must contain at least 32 characters');
+}
 app.use(
   session({
     secret: process.env.SECRET,
-    resave: true,
-    saveUninitialized: true,
+    resave: false,
+    saveUninitialized: false,
+    cookie: { httpOnly: true, sameSite: 'lax', secure: app.get('env') === 'production' },
   })
 )
 

@@ -8,4 +8,3 @@ npm-debug.log
 # For learning purposes we will leave .env visible, but make sure you never push it when working on your projects  
 # .env
 
-package-lock.json
