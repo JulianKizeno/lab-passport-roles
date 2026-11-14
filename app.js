@@ -62,6 +62,9 @@ passport.use(
   new localStrategy(
     { passReqToCallback: true },
     (req, username, password, next) => {
+      if (typeof username !== "string" || typeof password !== "string" || !username || !password) {
+        return next(null, false, { message: "Invalid credentials" })
+      }
       User.findOne({ username })
         .then((user) => {
           if (!user) {

@@ -11,10 +11,10 @@ router.get('/signup', (req, res) => {
   res.render('auth/signup')
 })
 
-router.post('/signup', (req, res) => {
+router.post('/signup', (req, res, next) => {
   const { username, password } = req.body
 
-  if (!username || !password) {
+  if (typeof username !== "string" || typeof password !== "string" || !username || !password) {
     res.render('auth/signup', {
       errorMsg: 'Por favor, rellena el formulario con usuario y contraseña.',
     })
